@@ -1,0 +1,185 @@
+/* Font chữ cơ bản */
+body {
+    background-color: #f4f7f6; /* Màu nền xám xanh nhạt */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #334155;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 260px;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    min-height: 100vh;
+}
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.sidebar-logo .icon-box {
+    width: 40px;
+    height: 40px;
+    background-color: #1e3a8a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+.nav-item {
+    color: #64748b;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.nav-item:hover, .nav-item.active {
+    background-color: #f1f5f9;
+    color: #1e3a8a;
+}
+
+/* --- NÚT BẤM CHÍNH --- */
+.btn-primary-dark {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 500;
+    border: none;
+}
+.btn-primary-dark:hover {
+    background-color: #172554;
+    color: #ffffff;
+}
+
+/* --- KHU VỰC BỘ LỌC --- */
+.filter-container {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+}
+.custom-input {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: none !important;
+}
+.custom-input:focus {
+    border-color: #cbd5e1;
+    background-color: #ffffff;
+}
+.input-group-text.custom-bg {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-right: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    color: #94a3b8;
+}
+.input-with-icon {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* --- KẾT QUẢ TÌM KIẾM --- */
+.result-badge {
+    background-color: #e0f2fe;
+    color: #0284c7;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+/* --- BẢNG DỮ LIỆU --- */
+.custom-table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+.table {
+    margin-bottom: 0;
+}
+.table thead th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border-bottom: none;
+    padding: 15px;
+}
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+}
+.price-text {
+    color: #ef4444; /* Màu đỏ */
+    font-weight: 600;
+}
+
+/* Badge thể loại */
+.badge-category {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+/* --- NÚT THAO TÁC (Sửa / Xóa) --- */
+.btn-action-soft {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: 0.2s;
+    margin-right: 5px;
+}
+.btn-edit-soft {
+    background-color: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+.btn-edit-soft:hover {
+    background-color: #e2e8f0;
+}
+.btn-delete-soft {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border-color: #fecaca;
+}
+.btn-delete-soft:hover {
+    background-color: #fee2e2;
+}
+
+/* --- PHÂN TRANG --- */
+.pagination-container {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+.pagination .page-link {
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    margin: 0 3px;
+    border-radius: 6px;
+}
+.pagination .page-item.active .page-link {
+    background-color: #1e3a8a;
+    border-color: #1e3a8a;
+    color: white;
+}
