@@ -27,7 +27,7 @@ public class Book {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "CategoryId", nullable = false)  // ← đây là chỗ sửa
+    @JoinColumn(name = "CategoryId", nullable = false)
     private Category category;
 
 }

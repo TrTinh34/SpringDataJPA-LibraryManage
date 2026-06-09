@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.math.BigDecimal;
@@ -86,6 +87,11 @@ public class BookController {
     @GetMapping("/sort/price")
     public ResponseEntity<List<BookDTO>> sortByPrice() {
         return ResponseEntity.ok(bookService.getAllSortedByPrice());
+    }
+
+    @GetMapping("/sort/title-desc")
+    public ResponseEntity<List<BookDTO>> sortByTitleDesc() {
+        return ResponseEntity.ok(bookService.getAllSortedByTitleDesc());
     }
 
     // Tìm theo tên + thể loại kết hợp

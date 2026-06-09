@@ -2,6 +2,7 @@ package com.example.javaee.service.impl;
 
 import com.example.javaee.DTO.CategoryDTO;
 import com.example.javaee.entity.Category;
+import com.example.javaee.repository.BookRepository;
 import com.example.javaee.repository.CategoryRepository;
 import com.example.javaee.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-
+    private final BookRepository bookRepository;
     @Override
     public List<CategoryDTO> getAll() {
         return categoryRepository.findAll()
@@ -48,8 +49,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Integer id) {
-        categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Category not found with id: " + id));
+
+        long bookCount = bookRepository.countByCategoryId(id);
+
+        if (bookCount > 0) {
+            throw new RuntimeException(
+                    "Không thể xóa thể loại '" +
+                            category.getName() +
+                            "' vì vẫn còn " +
+                            bookCount +
+                            " cuốn sách thuộc thể loại này."
+            );
+        }
+
         categoryRepository.deleteById(id);
     }
 

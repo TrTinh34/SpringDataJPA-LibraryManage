@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -139,4 +140,13 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findByTitleContainingIgnoreCaseAndCategoryId(keyword, categoryId)
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
+    @Override
+    public List<BookDTO> getAllSortedByTitleDesc() {
+        return bookRepository.findAllByOrderByTitleDesc()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+
 }

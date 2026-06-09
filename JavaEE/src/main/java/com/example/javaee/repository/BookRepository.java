@@ -39,4 +39,14 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     // Tìm theo tên + sắp xếp theo giá
     List<Book> findByTitleContainingIgnoreCaseOrderByPriceAsc(String keyword);
+
+    List<Book> findAllByOrderByTitleDesc();
+
+
+
+
+
+    
+    //đếm số sách thuộc 1 thể loại
+    long countByCategoryId(Integer categoryId);
 }

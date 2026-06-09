@@ -183,3 +183,30 @@ body {
     border-color: #1e3a8a;
     color: white;
 }
+
+.nav-link-custom {
+    display: block;
+    width: 100%;
+    text-decoration: none !important;
+    color: #64748b !important;
+    font-weight: 500;
+}
+
+.nav-link-custom:hover {
+    text-decoration: none !important;
+    color: #1e293b !important;
+}
+
+.active-menu {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+.active-menu .nav-link-custom {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+.active-menu i {
+    color: #000000 !important;
+}

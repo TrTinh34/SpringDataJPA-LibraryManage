@@ -2,6 +2,7 @@ package com.example.javaee.service;
 import com.example.javaee.DTO.BookDTO;
 import java.util.List;
 import java.math.BigDecimal;
+import org.springframework.data.domain.Page;
 public interface BookService {
     List<BookDTO> getAll();
     BookDTO getById(Integer id);
@@ -18,4 +19,6 @@ public interface BookService {
     List<BookDTO> getAllSortedByYear();
     List<BookDTO> getAllSortedByPrice();
     List<BookDTO> searchByTitleAndCategory(String keyword, Integer categoryId);
+    List<BookDTO> getAllSortedByTitleDesc();
+
 }

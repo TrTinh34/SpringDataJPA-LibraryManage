@@ -2,6 +2,13 @@
 const API_URL = "http://localhost:8085/api/books";
 const CATEGORY_API_URL = "http://localhost:8085/api/categories";
 
+// ---------------------------------------------------------------- //
+// CẤU HÌNH PHÂN TRANG
+// ---------------------------------------------------------------- //
+const ITEMS_PER_PAGE = 7;
+let currentPage = 1;
+let allBooks = []; // Lưu toàn bộ sách sau khi fetch về
+
 $(document).ready(function() {
 
     // 1. Khởi tạo: Load Thể loại và Load Sách ngay khi mở trang
@@ -39,24 +46,39 @@ $(document).ready(function() {
 
     // Hàm load danh sách sách (Có kèm tham số Tìm kiếm, Lọc, Sắp xếp)
     function loadBooks() {
-        let title = $('#searchInput').val();
+
+        let keyword = $('#searchInput').val();
         let categoryId = $('#categoryFilter').val();
         let sort = $('#sortBy').val();
 
+        let url = API_URL;
+        let data = {};
+
+        if (sort === "title_asc") {
+            url = `${API_URL}/sort/title`;
+        }
+        else if (sort === "price_asc") {
+            url = `${API_URL}/sort/price`;
+        }
+        else if (keyword || categoryId) {
+            url = `${API_URL}/search`;
+            data = {
+                keyword: keyword,
+                categoryId: categoryId
+            };
+        }
+
         $.ajax({
-            url: API_URL,
+            url: url,
             type: "GET",
-            data: {
-                title: title,
-                categoryId: categoryId,
-                sort: sort
-            },
+            data: data,
             success: function(books) {
-                renderTable(books);
+                allBooks = books;       // Lưu toàn bộ sách
+                currentPage = 1;       // Reset về trang 1 mỗi khi load mới
+                renderPage();
             },
             error: function(err) {
-                console.error("Lỗi khi tải dữ liệu sách:", err);
-                $('#bookTableBody').html('<tr><td colspan="7" class="text-center text-danger py-4">Không thể kết nối đến máy chủ!</td></tr>');
+                console.error(err);
             }
         });
     }
@@ -80,6 +102,69 @@ $(document).ready(function() {
     }
 
     // ---------------------------------------------------------------- //
+    // CÁC HÀM PHÂN TRANG
+    // ---------------------------------------------------------------- //
+
+    // Render đúng trang hiện tại từ allBooks
+    function renderPage() {
+        const totalItems = allBooks.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+        // Tính slice
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const pageBooks = allBooks.slice(start, end);
+
+        // Render bảng
+        renderTable(pageBooks, totalItems);
+
+        // Render pagination buttons
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        const ul = $('.pagination');
+        ul.empty();
+
+        // Nút prev
+        ul.append(`
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        `);
+
+        // Các nút số trang
+        for (let i = 1; i <= totalPages; i++) {
+            ul.append(`
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>
+            `);
+        }
+
+        // Nút next
+        ul.append(`
+            <li class="page-item ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        `);
+    }
+
+    // Bắt sự kiện click phân trang (delegate vì render động)
+    $(document).on('click', '.pagination .page-link', function(e) {
+        e.preventDefault();
+        const page = parseInt($(this).data('page'));
+        const totalPages = Math.ceil(allBooks.length / ITEMS_PER_PAGE);
+        if (isNaN(page) || page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderPage();
+    });
+
+    // ---------------------------------------------------------------- //
     // CÁC HÀM XỬ LÝ GIAO DIỆN & SỰ KIỆN
     // ---------------------------------------------------------------- //
 
@@ -96,12 +181,20 @@ $(document).ready(function() {
         return `<span class="badge-category" style="background-color: ${bg}; color: ${color};">${categoryName}</span>`;
     }
 
-    function renderTable(books) {
+    // Nhận thêm tham số totalItems để hiển thị đúng thông tin
+    function renderTable(books, totalItems) {
         let tbody = $('#bookTableBody');
         tbody.empty();
 
-        $('#resultCount').text(`Tìm thấy ${books.length} kết quả`);
-        $('#pageInfo').text(`Hiển thị 1 đến ${books.length} trong số ${books.length} mục`);
+        const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+        const end = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
+
+        $('#resultCount').text(`Tìm thấy ${totalItems} kết quả`);
+        $('#pageInfo').text(
+            totalItems === 0
+                ? 'Không có mục nào'
+                : `Hiển thị ${start} đến ${end} trong số ${totalItems} mục`
+        );
 
         if (books.length === 0) {
             tbody.append('<tr><td colspan="7" class="text-center text-muted py-4">Không tìm thấy cuốn sách nào!</td></tr>');
@@ -109,12 +202,11 @@ $(document).ready(function() {
         }
 
         books.forEach(book => {
-            // Xử lý trường hợp backend trả về category là Object hoặc tên chuỗi
-            let catName = book.category ? book.category.name : book.categoryName;
+            let catName = book.categoryName;
 
             let tr = `
                 <tr>
-                    <td class="text-center text-muted">${book.id}</td>
+<!--                    <td class="text-center text-muted">${book.id}</td>-->
                     <td class="fw-bold" style="color: #1e293b;">${book.title}</td>
                     <td><div style="max-width: 150px; white-space: normal;">${book.author}</div></td>
                     <td class="text-center">${book.publishYear}</td>
@@ -127,7 +219,7 @@ $(document).ready(function() {
                             data-author="${book.author}" 
                             data-year="${book.publishYear}" 
                             data-price="${book.price}" 
-                            data-category="${book.category ? book.category.id : book.categoryId}">
+                            data-category="${book.categoryId}">
                             <i class="far fa-edit"></i> Sửa
                         </button>
                         <button class="btn-action-soft btn-delete-soft btn-delete" data-id="${book.id}">
@@ -160,7 +252,6 @@ $(document).ready(function() {
     });
 
     // Bắt sự kiện click nút Sửa (Đổ dữ liệu lên Form)
-    // Dùng sự kiện delegate (on) vì nút này được render động bằng JS
     $('#bookTableBody').on('click', '.btn-edit', function() {
         let btn = $(this);
         $('#modalTitle').text('Chỉnh Sửa Sách');
@@ -185,16 +276,14 @@ $(document).ready(function() {
     $('#btnSaveBook').click(function() {
         let id = $('#bookId').val();
 
-        // Cấu trúc dữ liệu JSON gửi xuống Backend
         let bookData = {
             title: $('#bookTitle').val(),
             author: $('#bookAuthor').val(),
             publishYear: parseInt($('#bookYear').val()),
             price: parseFloat($('#bookPrice').val()),
-            category: { id: parseInt($('#bookCategory').val()) }
+            categoryId: parseInt($('#bookCategory').val())
         };
 
-        // Nếu có ID thì gọi API PUT (Cập nhật), ngược lại gọi POST (Thêm mới)
         let method = id ? "PUT" : "POST";
         let url = id ? `${API_URL}/${id}` : API_URL;
 
