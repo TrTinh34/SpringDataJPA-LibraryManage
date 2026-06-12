@@ -30,4 +30,8 @@ public class Book {
     @JoinColumn(name = "CategoryId", nullable = false)
     private Category category;
 
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
 }

@@ -67,9 +67,6 @@
                     <label class="form-label small text-muted">Thể loại</label>
                     <select id="categoryFilter" class="form-select custom-input">
                         <option value="">Tất cả thể loại</option>
-                        <option value="1">Văn học cổ điển</option>
-                        <option value="2">Lịch sử</option>
-                        <option value="3">Tâm lý học</option>
                     </select>
                 </div>
 
@@ -91,9 +88,9 @@
 
         <div class="custom-table-card shadow-sm">
             <table class="table align-middle">
-                <thead>
+                <thead class="bg-light text-muted">
                 <tr>
-                    <!--<th class="text-center">ID</th>-->
+                    <th class="text-center">ẢNH</th>
                     <th>TÊN SÁCH</th>
                     <th>TÁC GIẢ</th>
                     <th class="text-center">NĂM XB</th>
@@ -107,9 +104,8 @@
             </table>
 
             <div class="pagination-container bg-white">
-                <div id="pageInfo">Hiển thị 1 đến 3 trong số 45 mục</div>
+                <div id="pageInfo">Đang tải dữ liệu...</div>
                 <ul class="pagination pagination-sm mb-0">
-
                 </ul>
             </div>
         </div>
@@ -126,14 +122,22 @@
             <div class="modal-body">
                 <form id="bookForm">
                     <input type="hidden" id="bookId">
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">LINK ẢNH BÌA</label>
+                        <input type="text" class="form-control custom-input" id="bookImage" placeholder="Dán link ảnh vào đây (không bắt buộc)">
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-bold">TÊN SÁCH</label>
                         <input type="text" class="form-control custom-input" id="bookTitle" required>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-bold">TÁC GIẢ</label>
                         <input type="text" class="form-control custom-input" id="bookAuthor" required>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label text-muted small fw-bold">NĂM XUẤT BẢN</label>
@@ -144,12 +148,10 @@
                             <input type="number" class="form-control custom-input" id="bookPrice" required>
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-bold">THỂ LOẠI</label>
                         <select id="bookCategory" class="form-select custom-input" required>
-                            <option value="1">Văn học cổ điển</option>
-                            <option value="2">Lịch sử</option>
-                            <option value="3">Tâm lý học</option>
                         </select>
                     </div>
                 </form>

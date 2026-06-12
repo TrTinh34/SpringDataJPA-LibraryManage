@@ -210,3 +210,12 @@ body {
 .active-menu i {
     color: #000000 !important;
 }
+/* CSS cho ảnh bìa sách */
+.book-thumbnail {
+    width: 45px;          /* Chiều rộng ảnh */
+    height: 65px;         /* Chiều cao ảnh */
+    object-fit: cover;    /* Cắt cúp ảnh cho không bị méo */
+    border-radius: 6px;   /* Bo tròn góc ảnh một chút cho mềm mại */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho nổi bật */
+    border: 1px solid #e2e8f0;
+}

@@ -85,14 +85,17 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
+    // --- CẬP NHẬT: Thêm book.setImageUrl ---
     private void mapToEntity(BookDTO dto, Book book, Category category) {
         book.setTitle(dto.getTitle());
         book.setAuthor(dto.getAuthor());
         book.setPublishYear(dto.getPublishYear());
         book.setPrice(dto.getPrice());
         book.setCategory(category);
+        book.setImageUrl(dto.getImageUrl());
     }
 
+    // --- CẬP NHẬT: Thêm dto.setImageUrl ---
     private BookDTO toDTO(Book book) {
         BookDTO dto = new BookDTO();
         dto.setId(book.getId());
@@ -102,8 +105,10 @@ public class BookServiceImpl implements BookService {
         dto.setPrice(book.getPrice());
         dto.setCategoryId(book.getCategory().getId());
         dto.setCategoryName(book.getCategory().getName());
+        dto.setImageUrl(book.getImageUrl());
         return dto;
     }
+
     // Impl
     @Override
     public List<BookDTO> filterByPriceRange(BigDecimal min, BigDecimal max) {
@@ -140,6 +145,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findByTitleContainingIgnoreCaseAndCategoryId(keyword, categoryId)
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
+
     @Override
     public List<BookDTO> getAllSortedByTitleDesc() {
         return bookRepository.findAllByOrderByTitleDesc()
@@ -147,6 +153,4 @@ public class BookServiceImpl implements BookService {
                 .map(this::toDTO)
                 .toList();
     }
-
-
 }
