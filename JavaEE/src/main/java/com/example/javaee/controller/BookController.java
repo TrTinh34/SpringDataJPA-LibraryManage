@@ -98,14 +98,47 @@ public class BookController {
     @GetMapping("/search")
     public ResponseEntity<List<BookDTO>> search(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Integer categoryId) {
-        if (keyword != null && categoryId != null) {
-            return ResponseEntity.ok(bookService.searchByTitleAndCategory(keyword, categoryId));
-        } else if (keyword != null) {
-            return ResponseEntity.ok(bookService.searchByTitle(keyword));
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String sort) {
+
+        List<BookDTO> books;
+
+        if (keyword != null && !keyword.isBlank()
+                && categoryId != null) {
+
+            books = bookService.searchByTitleAndCategory(keyword, categoryId);
+
+        } else if (keyword != null && !keyword.isBlank()) {
+
+            books = bookService.searchByTitle(keyword);
+
         } else if (categoryId != null) {
-            return ResponseEntity.ok(bookService.getByCategory(categoryId));
+
+            books = bookService.getByCategory(categoryId);
+
+        } else {
+
+            books = bookService.getAll();
         }
-        return ResponseEntity.ok(bookService.getAll());
+
+        // Sắp xếp sau khi lọc
+        if ("title_asc".equals(sort)) {
+            books.sort((a, b) ->
+                    a.getTitle().compareToIgnoreCase(b.getTitle()));
+        }
+        else if ("title_desc".equals(sort)) {
+            books.sort((a, b) ->
+                    b.getTitle().compareToIgnoreCase(a.getTitle()));
+        }
+        else if ("price_asc".equals(sort)) {
+            books.sort((a, b) ->
+                    a.getPrice().compareTo(b.getPrice()));
+        }
+        else if ("year_desc".equals(sort)) {
+            books.sort((a, b) ->
+                    b.getPublishYear().compareTo(a.getPublishYear()));
+        }
+
+        return ResponseEntity.ok(books);
     }
 }

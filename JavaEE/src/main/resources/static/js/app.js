@@ -42,39 +42,30 @@ $(document).ready(function() {
     }
 
     function loadBooks() {
-        let keyword = $('#searchInput').val().trim();
+        let keyword    = $('#searchInput').val().trim();
         let categoryId = $('#categoryFilter').val();
-        let sort = $('#sortBy').val();
+        let sort       = $('#sortBy').val();
 
-        let url = API_URL;
-        let data = {};
-
-        if (sort === "title_asc") {
-            url = `${API_URL}/sort/title`;
-        }
-        else if (sort === "price_asc") {
-            url = `${API_URL}/sort/price`;
-        }
-        else if (keyword !== "" || categoryId !== "") {
-            url = `${API_URL}/search`;
-            data = {
-                keyword: keyword !== "" ? keyword : null,
-                categoryId: categoryId !== "" ? categoryId : null
-            };
-        }
+        // ✅ Chỉ append param nếu có giá trị thật — không gửi null/rỗng
+        let params = {};
+        if (keyword    !== "") params.keyword    = keyword;
+        if (categoryId !== "") params.categoryId = categoryId;
+        if (sort       !== "") params.sort       = sort;
 
         $.ajax({
-            url: url,
+            url: `${API_URL}/search`,
             type: "GET",
-            data: data,
+            data: params,           // jQuery tự build query string đúng
             success: function(books) {
                 allBooks = books;
                 currentPage = 1;
                 renderPage();
             },
             error: function(err) {
-                console.error("Lỗi tải sách: ", err);
-                $('#bookTableBody').html('<tr><td colspan="7" class="text-center text-danger py-4">Không thể kết nối đến máy chủ!</td></tr>');
+                console.error("Lỗi tải sách:", err);
+                $('#bookTableBody').html(
+                    '<tr><td colspan="7" class="text-center text-danger py-4">Không thể kết nối đến máy chủ!</td></tr>'
+                );
             }
         });
     }

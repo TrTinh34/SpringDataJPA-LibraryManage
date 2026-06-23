@@ -21,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     // Lọc theo khoảng giá
     List<Book> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
-
+    
     // Lọc theo khoảng năm xuất bản
     List<Book> findByPublishYearBetween(Integer fromYear, Integer toYear);
 
