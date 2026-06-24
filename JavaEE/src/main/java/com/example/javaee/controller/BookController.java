@@ -7,6 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile; // THÊM IMPORT
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
 
 import java.util.List;
 import java.math.BigDecimal;
@@ -17,6 +27,41 @@ public class BookController {
 
     private final BookService bookService;
 
+    // --- HÀM HỖ TRỢ LƯU FILE ẢNH (ĐÃ CẢI TIẾN) ---
+    private String saveImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+        try {
+            Path uploadPath = Paths.get("uploads");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // 1. Lấy tên file gốc
+            String originalFilename = file.getOriginalFilename();
+
+            // 2. Tách lấy đuôi file (VD: .jpg, .png)
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            // 3. ĐÃ SỬA: Tạo tên file hoàn toàn mới chỉ gồm chuỗi ngẫu nhiên (UUID) và đuôi file.
+            // Điều này loại bỏ hoàn toàn Tiếng Việt có dấu và khoảng trắng.
+            String filename = UUID.randomUUID().toString() + extension;
+
+            Path filePath = uploadPath.resolve(filename);
+
+            // Lưu file
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return "/uploads/" + filename;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAll() {
         return ResponseEntity.ok(bookService.getAll());
@@ -42,13 +87,34 @@ public class BookController {
         return ResponseEntity.ok(bookService.searchByAuthor(author));
     }
 
-    @PostMapping
-    public ResponseEntity<BookDTO> create(@RequestBody BookDTO dto) {
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<BookDTO> create(
+            @ModelAttribute BookDTO dto,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        // Nếu có file đính kèm, thực hiện lưu file và cập nhật imageUrl cho DTO
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = saveImage(file);
+            dto.setImageUrl(imageUrl);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(dto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> update(@PathVariable Integer id, @RequestBody BookDTO dto) {
+    // ĐÃ SỬA: Tương tự như hàm create
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<BookDTO> update(
+            @PathVariable Integer id,
+            @ModelAttribute BookDTO dto,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        // Nếu người dùng có chọn ảnh mới thì lưu ảnh mới đè lên link ảnh cũ
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = saveImage(file);
+            dto.setImageUrl(imageUrl);
+        }
+        // Nếu file trống, imageUrl trong dto sẽ giữ nguyên giá trị (do frontend gửi oldImage lên)
+
         return ResponseEntity.ok(bookService.update(id, dto));
     }
 

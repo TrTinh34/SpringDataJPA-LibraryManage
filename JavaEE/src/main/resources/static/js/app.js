@@ -10,7 +10,20 @@ let currentPage = 1;
 let allBooks = []; // Lưu toàn bộ sách sau khi fetch về
 
 $(document).ready(function() {
-
+    $('#bookImageFile').change(function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            // Sử dụng FileReader để đọc file vừa chọn lên trình duyệt
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imagePreview').attr('src', e.target.result).show(); // Gắn link và hiện ảnh
+            }
+            reader.readAsDataURL(file);
+        } else {
+            // Nếu người dùng ấn Cancel (không chọn ảnh nữa) thì ẩn thẻ preview đi
+            $('#imagePreview').hide().attr('src', '');
+        }
+    });
     // 1. Khởi tạo: Load Thể loại và Load Sách ngay khi mở trang
     loadCategories();
     loadBooks();
@@ -230,7 +243,11 @@ $(document).ready(function() {
         $('#modalTitle').text('Thêm Sách Mới');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
-        $('#bookImage').val(''); // Reset luôn cả ô ảnh
+        $('#bookImageFile').val('');
+        $('#bookImageFile').removeData('old-image');
+
+        // ĐÃ SỬA: Ẩn ảnh preview khi thêm mới
+        $('#imagePreview').hide().attr('src', '');
     });
 
     $('#bookTableBody').on('click', '.btn-edit', function() {
@@ -243,39 +260,53 @@ $(document).ready(function() {
         $('#bookPrice').val(btn.data('price'));
         $('#bookCategory').val(btn.data('category'));
 
-        // ĐÃ SỬA: Lấy link ảnh từ nút bấm đổ vào form
-        $('#bookImage').val(btn.data('image'));
+        $('#bookImageFile').val(''); // Clear ô chọn file mới
+
+        let oldImage = btn.data('image');
+        $('#bookImageFile').data('old-image', oldImage); // Lưu tạm link ảnh cũ
+
+        // ĐÃ SỬA: Nếu sách đang sửa đã có ảnh, thì hiển thị ảnh đó lên khung preview
+        if (oldImage) {
+            $('#imagePreview').attr('src', oldImage).show();
+        } else {
+            $('#imagePreview').hide().attr('src', '');
+        }
 
         $('#bookModal').modal('show');
     });
 
-    $('#bookTableBody').on('click', '.btn-delete', function() {
-        let id = $(this).data('id');
-        deleteBook(id);
-    });
-
+    // XỬ LÝ LƯU SÁCH (THÊM / SỬA) VỚI FORMDATA
     $('#btnSaveBook').click(function() {
         let id = $('#bookId').val();
-
-        let bookData = {
-            title: $('#bookTitle').val(),
-            author: $('#bookAuthor').val(),
-            publishYear: parseInt($('#bookYear').val()),
-            price: parseFloat($('#bookPrice').val()),
-            categoryId: parseInt($('#bookCategory').val()),
-
-            // ĐÃ SỬA: Lấy dữ liệu link ảnh từ form để gửi xuống DB
-            imageUrl: $('#bookImage').val()
-        };
-
         let method = id ? "PUT" : "POST";
         let url = id ? `${API_URL}/${id}` : API_URL;
+
+        // Khởi tạo FormData để gửi cả file và text
+        let formData = new FormData();
+        formData.append("title", $('#bookTitle').val());
+        formData.append("author", $('#bookAuthor').val());
+        formData.append("publishYear", $('#bookYear').val());
+        formData.append("price", $('#bookPrice').val());
+        formData.append("categoryId", $('#bookCategory').val());
+
+        // Lấy file từ thẻ input (nếu người dùng có chọn)
+        let fileInput = $('#bookImageFile')[0];
+        if (fileInput.files.length > 0) {
+            formData.append("file", fileInput.files[0]);
+        } else {
+            // Nếu không chọn file mới, gửi lại link ảnh cũ để BE không làm mất ảnh
+            let oldImage = $('#bookImageFile').data('old-image') || "";
+            if (oldImage) {
+                formData.append("imageUrl", oldImage);
+            }
+        }
 
         $.ajax({
             url: url,
             type: method,
-            contentType: "application/json",
-            data: JSON.stringify(bookData),
+            data: formData,
+            processData: false,  // Bắt buộc đối với FormData
+            contentType: false,  // Bắt buộc đối với FormData
             success: function(response) {
                 alert(id ? "Cập nhật thành công!" : "Thêm sách mới thành công!");
                 $('#bookModal').modal('hide');
