@@ -274,6 +274,11 @@ $(document).ready(function() {
 
         $('#bookModal').modal('show');
     });
+    //lắng nghe sự kiện click
+    $('#bookTableBody').on('click', '.btn-delete', function() {
+        let id = $(this).data('id');
+        deleteBook(id);
+    });
 
     // XỬ LÝ LƯU SÁCH (THÊM / SỬA) VỚI FORMDATA
     $('#btnSaveBook').click(function() {

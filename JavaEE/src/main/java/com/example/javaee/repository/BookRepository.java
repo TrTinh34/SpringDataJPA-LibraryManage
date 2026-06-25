@@ -15,15 +15,15 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findByCategoryId(Integer categoryId);
 
     // Tìm theo tác giả (đã có)
-    List<Book> findByAuthorContainingIgnoreCase(String author);
+//    List<Book> findByAuthorContainingIgnoreCase(String author);
 
     // ===== CẦN BỔ SUNG =====
 
     // Lọc theo khoảng giá
-    List<Book> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
+//    List<Book> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
     
     // Lọc theo khoảng năm xuất bản
-    List<Book> findByPublishYearBetween(Integer fromYear, Integer toYear);
+//    List<Book> findByPublishYearBetween(Integer fromYear, Integer toYear);
 
     // Sắp xếp theo tên A-Z
     List<Book> findAllByOrderByTitleAsc();
@@ -39,7 +39,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     // Tìm theo tên + sắp xếp theo giá
     List<Book> findByTitleContainingIgnoreCaseOrderByPriceAsc(String keyword);
-
+    //z-a
     List<Book> findAllByOrderByTitleDesc();
 
 
