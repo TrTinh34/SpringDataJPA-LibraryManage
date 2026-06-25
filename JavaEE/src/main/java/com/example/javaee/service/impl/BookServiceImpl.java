@@ -28,12 +28,12 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public BookDTO getById(Integer id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
-        return toDTO(book);
-    }
+//    @Override
+//    public BookDTO getById(Integer id) {
+//        Book book = bookRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+//        return toDTO(book);
+//    }
 
     @Override
     public List<BookDTO> getByCategory(Integer categoryId) {
@@ -51,13 +51,13 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<BookDTO> searchByAuthor(String author) {
-        return bookRepository.findByAuthorContainingIgnoreCase(author)
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<BookDTO> searchByAuthor(String author) {
+//        return bookRepository.findByAuthorContainingIgnoreCase(author)
+//                .stream()
+//                .map(this::toDTO)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public BookDTO create(BookDTO dto) {
@@ -110,17 +110,17 @@ public class BookServiceImpl implements BookService {
     }
 
     // Impl
-    @Override
-    public List<BookDTO> filterByPriceRange(BigDecimal min, BigDecimal max) {
-        return bookRepository.findByPriceBetween(min, max)
-                .stream().map(this::toDTO).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<BookDTO> filterByPriceRange(BigDecimal min, BigDecimal max) {
+//        return bookRepository.findByPriceBetween(min, max)
+//                .stream().map(this::toDTO).collect(Collectors.toList());
+//    }
 
-    @Override
-    public List<BookDTO> filterByYearRange(Integer from, Integer to) {
-        return bookRepository.findByPublishYearBetween(from, to)
-                .stream().map(this::toDTO).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<BookDTO> filterByYearRange(Integer from, Integer to) {
+//        return bookRepository.findByPublishYearBetween(from, to)
+//                .stream().map(this::toDTO).collect(Collectors.toList());
+//    }
 
     @Override
     public List<BookDTO> getAllSortedByTitle() {

@@ -21,10 +21,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(categoryService.getById(id));
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<CategoryDTO> getById(@PathVariable Integer id) {
+//        return ResponseEntity.ok(categoryService.getById(id));
+//    }
 
     @PostMapping
     public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO dto) {

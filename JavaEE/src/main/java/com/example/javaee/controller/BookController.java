@@ -66,11 +66,11 @@ public class BookController {
     public ResponseEntity<List<BookDTO>> getAll() {
         return ResponseEntity.ok(bookService.getAll());
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(bookService.getById(id));
-    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<BookDTO> getById(@PathVariable Integer id) {
+//        return ResponseEntity.ok(bookService.getById(id));
+//    }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<BookDTO>> getByCategory(@PathVariable Integer categoryId) {
@@ -82,10 +82,10 @@ public class BookController {
         return ResponseEntity.ok(bookService.searchByTitle(keyword));
     }
 
-    @GetMapping("/search/author")
-    public ResponseEntity<List<BookDTO>> searchByAuthor(@RequestParam String author) {
-        return ResponseEntity.ok(bookService.searchByAuthor(author));
-    }
+//    @GetMapping("/search/author")
+//    public ResponseEntity<List<BookDTO>> searchByAuthor(@RequestParam String author) {
+//        return ResponseEntity.ok(bookService.searchByAuthor(author));
+//    }
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<BookDTO> create(
@@ -124,20 +124,20 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
     // Lọc theo khoảng giá
-    @GetMapping("/filter/price")
-    public ResponseEntity<List<BookDTO>> filterByPrice(
-            @RequestParam BigDecimal min,
-            @RequestParam BigDecimal max) {
-        return ResponseEntity.ok(bookService.filterByPriceRange(min, max));
-    }
+//    @GetMapping("/filter/price")
+//    public ResponseEntity<List<BookDTO>> filterByPrice(
+//            @RequestParam BigDecimal min,
+//            @RequestParam BigDecimal max) {
+//        return ResponseEntity.ok(bookService.filterByPriceRange(min, max));
+//    }
 
-    // Lọc theo khoảng năm
-    @GetMapping("/filter/year")
-    public ResponseEntity<List<BookDTO>> filterByYear(
-            @RequestParam Integer from,
-            @RequestParam Integer to) {
-        return ResponseEntity.ok(bookService.filterByYearRange(from, to));
-    }
+//    // Lọc theo khoảng năm
+//    @GetMapping("/filter/year")
+//    public ResponseEntity<List<BookDTO>> filterByYear(
+//            @RequestParam Integer from,
+//            @RequestParam Integer to) {
+//        return ResponseEntity.ok(bookService.filterByYearRange(from, to));
+//    }
 
     // Sắp xếp
     @GetMapping("/sort/title")
